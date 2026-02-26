@@ -6,24 +6,18 @@ namespace App\Models;
 
 use App\Traits\BelongsToTenant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class User extends Authenticatable
+class Group extends Model
 {
     use HasFactory;
     use BelongsToTenant;
 
     protected $fillable = [
         'name',
-        'email',
-        'password',
-        'role',
-    ];
-
-    protected $hidden = [
-        'password',
+        'description',
     ];
 
     public function club(): BelongsTo
@@ -31,15 +25,15 @@ class User extends Authenticatable
         return $this->belongsTo(Club::class);
     }
 
-    public function coachedGroups(): BelongsToMany
+    public function coaches(): BelongsToMany
     {
-        return $this->belongsToMany(Group::class, 'group_coaches')
+        return $this->belongsToMany(User::class, 'group_coaches')
             ->withTimestamps();
     }
 
-    public function studentGroups(): BelongsToMany
+    public function students(): BelongsToMany
     {
-        return $this->belongsToMany(Group::class, 'group_students')
+        return $this->belongsToMany(User::class, 'group_students')
             ->withTimestamps();
     }
 }
