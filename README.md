@@ -11,6 +11,12 @@ This repository now contains an implementation scaffold of the Laravel backend d
   - `POST /api/auth/login`
   - `POST /api/auth/refresh`
 - Example RBAC policy setup for users (`UserPolicy`) and sample user management endpoints.
+- User CRUD endpoints (`GET/POST/PATCH/DELETE /api/users`) with policy-based role checks.
+- Parent-student linkage management via pivot endpoints:
+  - `GET /api/parents/me/children`
+  - `GET /api/parents/{parent}/children`
+  - `POST /api/parents/{parent}/children/{student}`
+  - `DELETE /api/parents/{parent}/children/{student}`
 - Base migrations for `clubs`, `users`, and `refresh_tokens`.
 
 ## Notes

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -22,6 +23,13 @@ class UserController extends Controller
         ]);
     }
 
+    public function show(User $user): JsonResponse
+    {
+        Gate::authorize('view', $user);
+
+        return new JsonResponse(['data' => $user]);
+    }
+
     public function store(StoreUserRequest $request): JsonResponse
     {
         Gate::authorize('create', User::class);
@@ -34,5 +42,29 @@ class UserController extends Controller
         ]);
 
         return new JsonResponse(['data' => $user], 201);
+    }
+
+    public function update(UpdateUserRequest $request, User $user): JsonResponse
+    {
+        Gate::authorize('update', $user);
+
+        $attributes = $request->only(['name', 'email', 'role']);
+
+        if ($request->filled('password')) {
+            $attributes['password'] = Hash::make($request->string('password')->value());
+        }
+
+        $user->update($attributes);
+
+        return new JsonResponse(['data' => $user->refresh()]);
+    }
+
+    public function destroy(User $user): JsonResponse
+    {
+        Gate::authorize('delete', $user);
+
+        $user->delete();
+
+        return new JsonResponse(status: 204);
     }
 }
